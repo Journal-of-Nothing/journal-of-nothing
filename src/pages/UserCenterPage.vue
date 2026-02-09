@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../stores/auth'
 import { fetchUserReviewOpinions, fetchUserSubmissions, updateUserPermissions } from '../services/supabaseApi'
 
 const router = useRouter()
 const { user, profile, signOut } = useAuth()
+const { t } = useI18n()
 const authUser = computed(() => user.value)
 const adminTargetId = ref('')
 const adminRole = ref<'author' | 'reviewer' | 'deputy_editor' | 'admin'>('author')
@@ -13,6 +15,7 @@ const adminCanSubmit = ref(true)
 const adminCanReview = ref(true)
 const adminCanComment = ref(true)
 const adminMessage = ref('')
+const isLoadingLists = ref(true)
 const mySubmissions = ref<{ id: string; title: string; status: string; updated_at: string }[]>([])
 const myReviews = ref<{ id: string; submission_id: string; status: string; decision: string | null; created_at: string }[]>([])
 
@@ -27,6 +30,7 @@ onMounted(async () => {
 
   mySubmissions.value = (submissionsRes.data as typeof mySubmissions.value) ?? []
   myReviews.value = (reviewsRes.data as typeof myReviews.value) ?? []
+  isLoadingLists.value = false
 })
 
 const handleSignOut = async () => {
@@ -37,7 +41,7 @@ const handleSignOut = async () => {
 const updatePermissions = async () => {
   adminMessage.value = ''
   if (!adminTargetId.value.trim()) {
-    adminMessage.value = '请输入用户 ID'
+    adminMessage.value = t('user.adminMissingId')
     return
   }
   const { error } = await updateUserPermissions({
@@ -51,67 +55,83 @@ const updatePermissions = async () => {
     adminMessage.value = error.message
     return
   }
-  adminMessage.value = '权限已更新'
+  adminMessage.value = t('user.adminUpdated')
 }
 </script>
 
 <template>
   <section class="mx-auto max-w-2xl space-y-6 rounded-lg border border-slate-200 bg-white p-6">
     <div>
-      <h1 class="text-2xl font-semibold text-slate-900">个人中心</h1>
-      <p class="text-sm text-slate-500">管理你的资料与登录状态</p>
+      <h1 class="text-2xl font-semibold text-slate-900">{{ $t('user.title') }}</h1>
+      <p class="text-sm text-slate-500">{{ $t('user.subtitle') }}</p>
     </div>
 
     <div class="rounded-md border border-slate-100 bg-slate-50 p-4">
-      <p class="text-sm text-slate-500">当前用户</p>
+      <p class="text-sm text-slate-500">{{ $t('user.currentUser') }}</p>
       <p class="mt-1 text-slate-900">
-        {{ authUser?.user_metadata?.user_name || authUser?.email || '未登录' }}
+        {{ authUser?.user_metadata?.user_name || authUser?.email || $t('app.anonymous') }}
       </p>
     </div>
 
     <div class="rounded-md border border-slate-100 bg-slate-50 p-4 text-sm">
-      <p class="text-slate-500">角色与权限</p>
+      <p class="text-slate-500">{{ $t('user.roleTitle') }}</p>
       <div class="mt-2 space-y-1 text-slate-700">
-        <p>角色：{{ profile?.role || '未设置' }}</p>
-        <p>投稿权限：{{ profile?.can_submit ? '允许' : '禁止' }}</p>
-        <p>审稿权限：{{ profile?.can_review ? '允许' : '禁止' }}</p>
-        <p>评论权限：{{ profile?.can_comment ? '允许' : '禁止' }}</p>
+        <p>{{ $t('user.roleLabel', { role: profile?.role || $t('user.roleUnset') }) }}</p>
+        <p>{{ $t('user.canSubmit', { value: profile?.can_submit ? $t('user.valueAllow') : $t('user.valueDeny') }) }}</p>
+        <p>{{ $t('user.canReview', { value: profile?.can_review ? $t('user.valueAllow') : $t('user.valueDeny') }) }}</p>
+        <p>{{ $t('user.canComment', { value: profile?.can_comment ? $t('user.valueAllow') : $t('user.valueDeny') }) }}</p>
       </div>
     </div>
 
     <div class="rounded-md border border-slate-100 bg-white p-4 text-sm">
-      <p class="text-slate-700">我的投稿</p>
+      <p class="text-slate-700">{{ $t('user.mySubmissions') }}</p>
       <ul class="mt-3 space-y-2">
-        <li v-for="item in mySubmissions" :key="item.id" class="flex items-center justify-between">
-          <router-link class="text-slate-700 hover:text-slate-900" :to="`/submissions/${item.id}`">
-            {{ item.title }}
-          </router-link>
-          <span class="text-xs text-slate-500">{{ item.status }}</span>
-        </li>
-        <li v-if="!mySubmissions.length" class="text-xs text-slate-400">暂无投稿</li>
+        <template v-if="isLoadingLists">
+          <li v-for="index in 2" :key="index" class="flex items-center justify-between">
+            <div class="skeleton-text h-4 w-32" />
+            <div class="skeleton-text h-3 w-14" />
+          </li>
+        </template>
+        <template v-else>
+          <li v-for="item in mySubmissions" :key="item.id" class="flex items-center justify-between">
+            <router-link class="text-slate-700 hover:text-slate-900" :to="`/submissions/${item.id}`">
+              {{ item.title }}
+            </router-link>
+            <span class="text-xs text-slate-500">{{ item.status }}</span>
+          </li>
+          <li v-if="!mySubmissions.length" class="text-xs text-slate-400">{{ $t('user.emptySubmissions') }}</li>
+        </template>
       </ul>
     </div>
 
     <div class="rounded-md border border-slate-100 bg-white p-4 text-sm">
-      <p class="text-slate-700">我参与的审稿</p>
+      <p class="text-slate-700">{{ $t('user.myReviews') }}</p>
       <ul class="mt-3 space-y-2">
-        <li v-for="item in myReviews" :key="item.id" class="flex items-center justify-between">
-          <router-link class="text-slate-700 hover:text-slate-900" :to="`/submissions/${item.submission_id}/review-opinions`">
-            审稿意见 {{ item.id.slice(0, 6) }}
-          </router-link>
-          <span class="text-xs text-slate-500">{{ item.status }}</span>
-        </li>
-        <li v-if="!myReviews.length" class="text-xs text-slate-400">暂无审稿参与</li>
+        <template v-if="isLoadingLists">
+          <li v-for="index in 2" :key="index" class="flex items-center justify-between">
+            <div class="skeleton-text h-4 w-32" />
+            <div class="skeleton-text h-3 w-14" />
+          </li>
+        </template>
+        <template v-else>
+          <li v-for="item in myReviews" :key="item.id" class="flex items-center justify-between">
+            <router-link class="text-slate-700 hover:text-slate-900" :to="`/submissions/${item.submission_id}/review-opinions`">
+              {{ $t('review.defaultTitle') }} {{ item.id.slice(0, 6) }}
+            </router-link>
+            <span class="text-xs text-slate-500">{{ item.status }}</span>
+          </li>
+          <li v-if="!myReviews.length" class="text-xs text-slate-400">{{ $t('user.emptyReviews') }}</li>
+        </template>
       </ul>
     </div>
 
     <div v-if="isAdmin" class="rounded-md border border-slate-100 bg-white p-4 text-sm">
-      <p class="text-slate-700">管理员 · 账号权限管理</p>
+      <p class="text-slate-700">{{ $t('user.adminTitle') }}</p>
       <div class="mt-3 space-y-3">
         <input
           v-model="adminTargetId"
           class="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
-          placeholder="用户 ID"
+          :placeholder="$t('user.adminUserId')"
         />
         <select v-model="adminRole" class="w-full rounded-md border border-slate-200 px-3 py-2 text-sm">
           <option value="author">作者</option>
@@ -136,7 +156,7 @@ const updatePermissions = async () => {
             class="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white"
             @click="updatePermissions"
           >
-            更新权限
+            {{ $t('user.adminUpdate') }}
           </button>
         </div>
       </div>
@@ -146,7 +166,7 @@ const updatePermissions = async () => {
       class="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300"
       @click="handleSignOut"
     >
-      退出登录
+      {{ $t('user.signOut') }}
     </button>
   </section>
 </template>

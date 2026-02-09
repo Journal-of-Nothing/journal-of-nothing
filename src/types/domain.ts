@@ -29,6 +29,7 @@ export interface SubmissionDetail {
   accepted_at?: string | null
   rejected_at?: string | null
   status: SubmissionStatus
+  decision?: 'accept' | 'minor' | 'major' | 'reject' | null
   author_id?: string | null
   author?: UserProfile | null
   keywords?: string[] | null

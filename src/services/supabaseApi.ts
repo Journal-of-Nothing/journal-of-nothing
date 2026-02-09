@@ -240,7 +240,7 @@ export const fetchSubmissionDetail = async (
   const { data, error } = await supabase
     .from('submissions')
     .select(
-      'id,title,abstract,content_md,created_at,updated_at,accepted_at,rejected_at,status,author_id,keywords,version_major,version_minor,version_label,author:users(username)',
+      'id,title,abstract,content_md,created_at,updated_at,accepted_at,rejected_at,status,decision,author_id,keywords,version_major,version_minor,version_label,author:users(username)',
     )
     .eq('id', id)
     .maybeSingle()
@@ -248,7 +248,7 @@ export const fetchSubmissionDetail = async (
   if (error) {
     const retry = await supabase
       .from('submissions')
-      .select('id,title,abstract,content_md,created_at,updated_at,accepted_at,rejected_at,status,author_id,keywords,version_major,version_minor,version_label')
+      .select('id,title,abstract,content_md,created_at,updated_at,accepted_at,rejected_at,status,decision,author_id,keywords,version_major,version_minor,version_label')
       .eq('id', id)
       .maybeSingle()
     return {
@@ -309,8 +309,8 @@ export const fetchUserReviewOpinions = async (reviewerId: string) => {
 }
 
 export const updateSubmissionDecision = async (id: string, payload: {
-  status: 'accepted' | 'rejected'
-  decision: 'accept' | 'minor' | 'major' | 'reject'
+  status: 'accepted' | 'rejected' | 'in_review'
+  decision: 'accept' | 'major' | 'reject' | null
 }) => {
   const timestamp = new Date().toISOString()
   return supabase.from('submissions').update({
