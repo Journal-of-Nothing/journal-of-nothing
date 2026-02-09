@@ -85,19 +85,26 @@ onMounted(async () => {
     <p v-if="errorMessage" class="text-sm text-amber-600">{{ errorMessage }}</p>
 
     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <div v-if="isLoadingStats" v-for="index in 4" :key="index" class="rounded-lg border border-slate-200 bg-white p-3">
-        <div class="skeleton-text h-3 w-16" />
-        <div class="skeleton-text mt-2 h-6 w-20" />
-      </div>
-      <div
-        v-else
-        v-for="stat in stats"
-        :key="stat.label"
-        class="rounded-lg border border-slate-200 bg-white p-3"
-      >
-        <p class="text-xs text-slate-500">{{ stat.label }}</p>
-        <p class="mt-1 text-xl font-semibold text-slate-900">{{ stat.value }}</p>
-      </div>
+      <template v-if="isLoadingStats">
+        <div
+          v-for="index in 4"
+          :key="index"
+          class="rounded-lg border border-slate-200 bg-white p-3"
+        >
+          <div class="skeleton-text h-3 w-16" />
+          <div class="skeleton-text mt-2 h-6 w-20" />
+        </div>
+      </template>
+      <template v-else>
+        <div
+          v-for="stat in stats"
+          :key="stat.label"
+          class="rounded-lg border border-slate-200 bg-white p-3"
+        >
+          <p class="text-xs text-slate-500">{{ stat.label }}</p>
+          <p class="mt-1 text-xl font-semibold text-slate-900">{{ stat.value }}</p>
+        </div>
+      </template>
     </div>
 
     <div class="grid gap-4">
@@ -107,39 +114,46 @@ onMounted(async () => {
           <span class="text-xs text-slate-500">{{ $t('home.updatedNow') }}</span>
         </div>
         <ul class="mt-3 space-y-3">
-          <li v-if="isLoadingActivities" v-for="index in 3" :key="index" class="flex items-center justify-between border-b border-slate-100 pb-2 last:border-b-0">
-            <div class="space-y-2">
-              <div class="skeleton-text h-4 w-48" />
-              <div class="skeleton-text h-3 w-36" />
-            </div>
-            <div class="skeleton-text h-5 w-12" />
-          </li>
-          <li
-            v-else
-            v-for="activity in activities"
-            :key="activity.id"
-            class="flex items-center justify-between border-b border-slate-100 pb-2 last:border-b-0"
-          >
-            <div>
-              <router-link
-                class="text-sm font-medium text-slate-900 hover:text-slate-700"
-                :to="`/submissions/${activity.id}`"
-              >
-                {{ activity.title }}
-              </router-link>
-              <p class="text-xs text-slate-500">{{ activity.meta }}</p>
-            </div>
-            <span
-              class="rounded-full px-2 py-0.5 text-[11px] font-medium"
-              :class="
-                activity.status === 'accepted'
-                  ? 'bg-emerald-50 text-emerald-700'
-                  : 'bg-amber-50 text-amber-700'
-              "
+          <template v-if="isLoadingActivities">
+            <li
+              v-for="index in 3"
+              :key="index"
+              class="flex items-center justify-between border-b border-slate-100 pb-2 last:border-b-0"
             >
-              {{ activity.status === 'accepted' ? '已发表' : '在审' }}
-            </span>
-          </li>
+              <div class="space-y-2">
+                <div class="skeleton-text h-4 w-48" />
+                <div class="skeleton-text h-3 w-36" />
+              </div>
+              <div class="skeleton-text h-5 w-12" />
+            </li>
+          </template>
+          <template v-else>
+            <li
+              v-for="activity in activities"
+              :key="activity.id"
+              class="flex items-center justify-between border-b border-slate-100 pb-2 last:border-b-0"
+            >
+              <div>
+                <router-link
+                  class="text-sm font-medium text-slate-900 hover:text-slate-700"
+                  :to="`/submissions/${activity.id}`"
+                >
+                  {{ activity.title }}
+                </router-link>
+                <p class="text-xs text-slate-500">{{ activity.meta }}</p>
+              </div>
+              <span
+                class="rounded-full px-2 py-0.5 text-[11px] font-medium"
+                :class="
+                  activity.status === 'accepted'
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : 'bg-amber-50 text-amber-700'
+                "
+              >
+                {{ activity.status === 'accepted' ? '已发表' : '在审' }}
+              </span>
+            </li>
+          </template>
           <li v-if="!isLoadingActivities && !activities.length" class="py-6 text-center text-xs text-slate-400">
             {{ $t('home.empty') }}
           </li>
