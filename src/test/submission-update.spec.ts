@@ -64,7 +64,10 @@ describe('submission update flow', () => {
       error: null,
     })
     ;(api.fetchComments as ReturnType<typeof vi.fn>).mockResolvedValue({ data: [], error: null })
-    ;(api.fetchReviewOpinions as ReturnType<typeof vi.fn>).mockResolvedValue({ data: [], error: null })
+    ;(api.fetchReviewOpinions as ReturnType<typeof vi.fn>).mockResolvedValue({
+      data: [],
+      error: null,
+    })
     ;(api.fetchReviewSlots as ReturnType<typeof vi.fn>).mockResolvedValue({ data: [], error: null })
     ;(api.updateSubmissionContent as ReturnType<typeof vi.fn>).mockResolvedValue({ error: null })
 
@@ -78,9 +81,7 @@ describe('submission update flow', () => {
     await flushPromises()
 
     await wrapper.find('input[placeholder="关键词，用逗号分隔"]').setValue('alpha, beta')
-    const titleInput = wrapper
-      .findAll('input')
-      .find((input) => !input.attributes('placeholder'))
+    const titleInput = wrapper.findAll('input').find((input) => !input.attributes('placeholder'))
     if (!titleInput) {
       throw new Error('Title input not found')
     }

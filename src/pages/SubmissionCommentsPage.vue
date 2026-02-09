@@ -11,9 +11,7 @@ const route = useRoute()
 const { user, profile } = useAuth()
 const { t } = useI18n()
 const submissionTitle = ref('')
-const submissionMeta = ref(
-  t('detail.meta', { author: `@${t('detail.unknownAuthor')}`, date: '—' }),
-)
+const submissionMeta = ref(t('detail.meta', { author: `@${t('detail.unknownAuthor')}`, date: '—' }))
 const submissionStatus = ref(t('detail.statusInReview'))
 const submissionStatusCode = ref<'submitted' | 'in_review' | 'accepted' | 'rejected'>('in_review')
 const comments = ref<CommentItem[]>([])
@@ -37,9 +35,7 @@ onMounted(async () => {
       date: new Date(submission.updated_at).toLocaleDateString(),
     })
     submissionStatus.value =
-      submission.status === 'accepted'
-        ? t('detail.statusAccepted')
-        : t('detail.statusInReview')
+      submission.status === 'accepted' ? t('detail.statusAccepted') : t('detail.statusInReview')
     submissionStatusCode.value = submission.status
   }
 
@@ -109,7 +105,9 @@ const submitComment = async () => {
       <div class="border-b border-slate-200 px-6 py-5">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 class="text-2xl font-semibold text-slate-900">{{ submissionTitle || $t('detail.fallbackTitle') }}</h1>
+            <h1 class="text-2xl font-semibold text-slate-900">
+              {{ submissionTitle || $t('detail.fallbackTitle') }}
+            </h1>
             <p class="mt-1 text-sm text-slate-500">{{ submissionMeta }}</p>
           </div>
           <span
@@ -125,7 +123,10 @@ const submitComment = async () => {
         </div>
       </div>
       <div class="flex flex-wrap items-center gap-6 px-6 py-3 text-sm text-slate-500">
-        <router-link class="text-slate-500 hover:text-slate-700" :to="`/submissions/${route.params.id}`">
+        <router-link
+          class="text-slate-500 hover:text-slate-700"
+          :to="`/submissions/${route.params.id}`"
+        >
           {{ $t('detail.tabContent') }}
         </router-link>
         <span class="font-medium text-slate-900">{{ $t('detail.tabComments') }}</span>
@@ -146,7 +147,9 @@ const submitComment = async () => {
         <span class="text-sm text-slate-500">{{ comments.length }} 条</span>
       </div>
       <div class="border-b border-slate-200 px-6 py-4">
-        <label class="text-sm font-medium text-slate-700" for="comment">{{ $t('comments.newComment') }}</label>
+        <label class="text-sm font-medium text-slate-700" for="comment">{{
+          $t('comments.newComment')
+        }}</label>
         <textarea
           id="comment"
           v-model="commentText"
@@ -196,7 +199,9 @@ const submitComment = async () => {
           </li>
         </template>
       </ul>
-      <p v-if="!isLoading && !comments.length" class="px-6 py-6 text-center text-xs text-slate-400">{{ $t('comments.empty') }}</p>
+      <p v-if="!isLoading && !comments.length" class="px-6 py-6 text-center text-xs text-slate-400">
+        {{ $t('comments.empty') }}
+      </p>
     </div>
   </section>
 </template>

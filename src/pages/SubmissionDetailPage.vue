@@ -16,9 +16,7 @@ import { useAuth } from '../stores/auth'
 const route = useRoute()
 const { t } = useI18n()
 const submissionTitle = ref('')
-const submissionMeta = ref(
-  t('detail.meta', { author: `@${t('detail.unknownAuthor')}`, date: '—' }),
-)
+const submissionMeta = ref(t('detail.meta', { author: `@${t('detail.unknownAuthor')}`, date: '—' }))
 const submissionStatus = ref(t('detail.statusInReview'))
 const submissionStatusCode = ref<'submitted' | 'in_review' | 'accepted' | 'rejected'>('in_review')
 const submissionAbstract = ref('')
@@ -52,7 +50,9 @@ const noticeMessage = ref('')
 const isLoading = ref(true)
 const { user, profile } = useAuth()
 const isAuthor = computed(() => user.value && authorId.value && user.value.id === authorId.value)
-const isStaff = computed(() => profile.value?.role === 'admin' || profile.value?.role === 'deputy_editor')
+const isStaff = computed(
+  () => profile.value?.role === 'admin' || profile.value?.role === 'deputy_editor',
+)
 const decisionButtonClass = computed(() => {
   if (decisionState.value === 'accepted') return 'bg-emerald-600 hover:bg-emerald-700'
   if (decisionState.value === 'rejected') return 'bg-rose-600 hover:bg-rose-700'
@@ -164,9 +164,10 @@ onMounted(async () => {
 const saveEdits = async () => {
   editMessage.value = ''
   if (!submissionIdRef.value) return
-  const next = versionChangeType.value === 'major'
-    ? { major: versionMajor.value + 1, minor: 0 }
-    : { major: versionMajor.value, minor: versionMinor.value + 1 }
+  const next =
+    versionChangeType.value === 'major'
+      ? { major: versionMajor.value + 1, minor: 0 }
+      : { major: versionMajor.value, minor: versionMinor.value + 1 }
   const dateLabel = new Date().toISOString().slice(0, 10).replace(/-/g, '')
   const nextLabel = `${dateLabel}_V${next.major}.${next.minor}`
   const keywordsList = editKeywordsInput.value
@@ -267,7 +268,10 @@ const claimSlot = async (slotId: string) => {
       </div>
       <div class="flex flex-wrap items-center gap-6 px-6 py-3 text-sm text-slate-500">
         <span class="font-medium text-slate-700">{{ $t('detail.tabContent') }}</span>
-        <router-link class="text-slate-500 hover:text-slate-700" :to="`/submissions/${route.params.id}/comments`">
+        <router-link
+          class="text-slate-500 hover:text-slate-700"
+          :to="`/submissions/${route.params.id}/comments`"
+        >
           {{ $t('detail.tabComments') }}
         </router-link>
         <router-link
@@ -312,7 +316,9 @@ const claimSlot = async (slotId: string) => {
                 >
                   {{ tag }}
                 </span>
-                <span v-if="!keywords.length" class="text-sm text-slate-400">{{ $t('detail.emptyKeywords') }}</span>
+                <span v-if="!keywords.length" class="text-sm text-slate-400">{{
+                  $t('detail.emptyKeywords')
+                }}</span>
               </div>
             </section>
             <section>
@@ -336,31 +342,54 @@ const claimSlot = async (slotId: string) => {
           <div class="space-y-4 px-6 py-5 text-sm">
             <div>
               <label class="text-slate-500">{{ $t('detail.editLabelTitle') }}</label>
-              <input v-model="editTitle" class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2" />
+              <input
+                v-model="editTitle"
+                class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2"
+              />
             </div>
             <div>
               <label class="text-slate-500">{{ $t('detail.editLabelAbstract') }}</label>
-              <textarea v-model="editAbstract" rows="3" class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2" />
+              <textarea
+                v-model="editAbstract"
+                rows="3"
+                class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2"
+              />
             </div>
             <div>
               <label class="text-slate-500">{{ $t('detail.editLabelContent') }}</label>
-              <textarea v-model="editContent" rows="6" class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2" />
+              <textarea
+                v-model="editContent"
+                rows="6"
+                class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2"
+              />
             </div>
             <div>
               <label class="text-slate-500">{{ $t('detail.editLabelKeywords') }}</label>
-              <input v-model="editKeywordsInput" class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2" :placeholder="$t('submit.placeholderKeywords')" />
+              <input
+                v-model="editKeywordsInput"
+                class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2"
+                :placeholder="$t('submit.placeholderKeywords')"
+              />
             </div>
             <div>
               <label class="text-slate-500">{{ $t('detail.editLabelVersion') }}</label>
-              <select v-model="versionChangeType" class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2">
+              <select
+                v-model="versionChangeType"
+                class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2"
+              >
                 <option value="minor">{{ $t('detail.editOptionMinor') }}</option>
                 <option value="major">{{ $t('detail.editOptionMajor') }}</option>
               </select>
-              <p class="mt-1 text-xs text-slate-400">{{ $t('detail.editCurrentVersion', { version: versionLabel }) }}</p>
+              <p class="mt-1 text-xs text-slate-400">
+                {{ $t('detail.editCurrentVersion', { version: versionLabel }) }}
+              </p>
             </div>
             <div class="flex items-center justify-between">
               <span class="text-xs text-slate-500">{{ editMessage }}</span>
-              <button class="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white" @click="saveEdits">
+              <button
+                class="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white"
+                @click="saveEdits"
+              >
                 {{ $t('detail.editSave') }}
               </button>
             </div>
@@ -372,20 +401,36 @@ const claimSlot = async (slotId: string) => {
         <div class="rounded-lg border border-slate-200 bg-white p-5 text-sm">
           <h3 class="text-base font-semibold text-slate-900">{{ $t('detail.slotsTitle') }}</h3>
           <div class="mt-3 space-y-2 text-slate-600">
-            <p>{{ $t('detail.slotsOpen', { count: reviewSlots.filter((slot) => slot.status === 'open').length }) }}</p>
-            <p>{{ $t('detail.slotsClaimed', { count: reviewSlots.filter((slot) => slot.status === 'claimed').length }) }}</p>
+            <p>
+              {{
+                $t('detail.slotsOpen', {
+                  count: reviewSlots.filter((slot) => slot.status === 'open').length,
+                })
+              }}
+            </p>
+            <p>
+              {{
+                $t('detail.slotsClaimed', {
+                  count: reviewSlots.filter((slot) => slot.status === 'claimed').length,
+                })
+              }}
+            </p>
           </div>
           <div class="mt-3 space-y-2">
             <button
               v-for="slot in reviewSlots"
               :key="slot.id"
               class="w-full rounded-md border border-slate-200 px-3 py-2 text-xs text-slate-700"
-              :class="slot.status === 'open' ? 'hover:border-slate-300' : 'bg-slate-50 text-slate-400'"
+              :class="
+                slot.status === 'open' ? 'hover:border-slate-300' : 'bg-slate-50 text-slate-400'
+              "
               :disabled="slot.status !== 'open'"
               @click="claimSlot(slot.id)"
             >
               {{ slot.status === 'open' ? $t('detail.slotClaim') : $t('detail.slotClaimed') }}
-              <span v-if="slot.dueAt" class="ml-2 text-slate-400">{{ $t('detail.slotDue', { date: new Date(slot.dueAt).toLocaleDateString() }) }}</span>
+              <span v-if="slot.dueAt" class="ml-2 text-slate-400">{{
+                $t('detail.slotDue', { date: new Date(slot.dueAt).toLocaleDateString() })
+              }}</span>
             </button>
             <p v-if="slotMessage" class="text-xs text-amber-600">{{ slotMessage }}</p>
           </div>
@@ -428,7 +473,10 @@ const claimSlot = async (slotId: string) => {
           <div class="mt-3 space-y-3">
             <div>
               <label class="text-xs text-slate-500">{{ $t('detail.decisionLabel') }}</label>
-              <select v-model="decisionState" class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2 text-sm">
+              <select
+                v-model="decisionState"
+                class="mt-2 w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
+              >
                 <option value="pending">{{ $t('detail.decisionPending') }}</option>
                 <option value="revise">{{ $t('detail.decisionRevise') }}</option>
                 <option value="rejected">{{ $t('detail.decisionReject') }}</option>
@@ -438,7 +486,11 @@ const claimSlot = async (slotId: string) => {
             </div>
             <div class="flex items-center justify-between">
               <span class="text-xs text-slate-500">{{ decisionMessage }}</span>
-              <button class="rounded-md px-3 py-2 text-xs font-semibold text-white" :class="decisionButtonClass" @click="submitDecision">
+              <button
+                class="rounded-md px-3 py-2 text-xs font-semibold text-white"
+                :class="decisionButtonClass"
+                @click="submitDecision"
+              >
                 {{ $t('detail.decisionUpdate') }}
               </button>
             </div>

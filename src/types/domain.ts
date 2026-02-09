@@ -80,6 +80,15 @@ export interface StatIndex {
   value: unknown
 }
 
+export interface AnnouncementRecord {
+  id: string
+  title: string
+  body_md: string | null
+  created_at: string
+  updated_at: string
+  author_id?: string | null
+}
+
 export interface ReviewSlot {
   id: string
   submission_id: string

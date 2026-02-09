@@ -125,14 +125,18 @@ watchEffect(() => {
     <div class="flex items-center gap-2 text-sm">
       <button
         class="flex-1 rounded-md border px-3 py-2"
-        :class="mode === 'login' ? 'border-slate-900 text-slate-900' : 'border-slate-200 text-slate-500'"
+        :class="
+          mode === 'login' ? 'border-slate-900 text-slate-900' : 'border-slate-200 text-slate-500'
+        "
         @click="mode = 'login'"
       >
         {{ $t('login.tabLogin') }}
       </button>
       <button
         class="flex-1 rounded-md border px-3 py-2"
-        :class="mode === 'signup' ? 'border-slate-900 text-slate-900' : 'border-slate-200 text-slate-500'"
+        :class="
+          mode === 'signup' ? 'border-slate-900 text-slate-900' : 'border-slate-200 text-slate-500'
+        "
         @click="mode = 'signup'"
       >
         {{ $t('login.tabSignup') }}

@@ -67,9 +67,8 @@ describe('review opinion reply permissions', () => {
     })
     ;(api.createReviewOpinionReply as ReturnType<typeof vi.fn>).mockResolvedValue({ error: null })
 
-    const { default: SubmissionReviewOpinionsPage } = await import(
-      '../pages/SubmissionReviewOpinionsPage.vue'
-    )
+    const { default: SubmissionReviewOpinionsPage } =
+      await import('../pages/SubmissionReviewOpinionsPage.vue')
     const wrapper = mount(SubmissionReviewOpinionsPage, {
       global: {
         stubs: { RouterLink: true },
@@ -136,9 +135,8 @@ describe('review opinion reply permissions', () => {
       error: null,
     })
 
-    const { default: SubmissionReviewOpinionsPage } = await import(
-      '../pages/SubmissionReviewOpinionsPage.vue'
-    )
+    const { default: SubmissionReviewOpinionsPage } =
+      await import('../pages/SubmissionReviewOpinionsPage.vue')
     const wrapper = mount(SubmissionReviewOpinionsPage, {
       global: {
         stubs: { RouterLink: true },

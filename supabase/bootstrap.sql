@@ -77,6 +77,15 @@ create table if not exists public.stats_indexes (
   updated_at timestamptz default now()
 );
 
+create table if not exists public.announcements (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  body_md text,
+  author_id uuid references public.users(id) on delete set null,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
 -- Allow only one active submission per author (submitted/in_review)
 create or replace function public.check_author_active_submission()
 returns trigger
@@ -258,6 +267,7 @@ alter table public.review_opinions enable row level security;
 alter table public.review_opinion_replies enable row level security;
 alter table public.timeline_events enable row level security;
 alter table public.stats_indexes enable row level security;
+alter table public.announcements enable row level security;
 
 create or replace function public.has_role(role_name text)
 returns boolean
@@ -423,3 +433,19 @@ create policy "review_slots_reviewer_claim"
 create policy "review_slots_staff_write"
   on public.review_slots for update
   using (public.is_staff());
+
+create policy "announcements_public_read"
+  on public.announcements for select
+  using (true);
+
+create policy "announcements_admin_insert"
+  on public.announcements for insert
+  with check (public.has_role('admin'));
+
+create policy "announcements_admin_update"
+  on public.announcements for update
+  using (public.has_role('admin'));
+
+create policy "announcements_admin_delete"
+  on public.announcements for delete
+  using (public.has_role('admin'));

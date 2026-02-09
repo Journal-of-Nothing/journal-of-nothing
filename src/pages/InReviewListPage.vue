@@ -85,13 +85,16 @@ onMounted(async () => {
           </div>
           <div class="flex items-center gap-3 text-xs text-slate-500">
             <span class="flex items-center gap-1">
-              <span class="h-1.5 w-1.5 rounded-full bg-amber-500" /> {{ $t('list.slots') }} {{ item.slots }}
+              <span class="h-1.5 w-1.5 rounded-full bg-amber-500" /> {{ $t('list.slots') }}
+              {{ item.slots }}
             </span>
             <span class="flex items-center gap-1">
-              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500" /> {{ $t('list.comments') }} {{ item.comments }}
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500" /> {{ $t('list.comments') }}
+              {{ item.comments }}
             </span>
             <span class="flex items-center gap-1">
-              <span class="h-1.5 w-1.5 rounded-full bg-indigo-500" /> {{ $t('list.reviews') }} {{ item.reviews }}
+              <span class="h-1.5 w-1.5 rounded-full bg-indigo-500" /> {{ $t('list.reviews') }}
+              {{ item.reviews }}
             </span>
           </div>
         </div>

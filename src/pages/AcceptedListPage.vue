@@ -81,16 +81,18 @@ onMounted(async () => {
                 :key="tag"
                 class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700"
               >
-                    {{ tag === 'Accepted' ? $t('list.tagAccepted') : tag }}
+                {{ tag === 'Accepted' ? $t('list.tagAccepted') : tag }}
               </span>
             </div>
           </div>
           <div class="flex items-center gap-3 text-xs text-slate-500">
             <span class="flex items-center gap-1">
-              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500" /> {{ $t('list.comments') }} {{ item.comments }}
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500" /> {{ $t('list.comments') }}
+              {{ item.comments }}
             </span>
             <span class="flex items-center gap-1">
-              <span class="h-1.5 w-1.5 rounded-full bg-indigo-500" /> {{ $t('list.reviews') }} {{ item.reviews }}
+              <span class="h-1.5 w-1.5 rounded-full bg-indigo-500" /> {{ $t('list.reviews') }}
+              {{ item.reviews }}
             </span>
           </div>
         </div>

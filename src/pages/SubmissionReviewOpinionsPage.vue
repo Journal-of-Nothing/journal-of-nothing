@@ -37,9 +37,7 @@ const { user, profile } = useAuth()
 const { t } = useI18n()
 const submissionTitle = ref('')
 const authorId = ref<string | null>(null)
-const submissionMeta = ref(
-  t('detail.meta', { author: `@${t('detail.unknownAuthor')}`, date: '—' }),
-)
+const submissionMeta = ref(t('detail.meta', { author: `@${t('detail.unknownAuthor')}`, date: '—' }))
 const submissionStatus = ref(t('detail.statusInReview'))
 const submissionStatusCode = ref<'submitted' | 'in_review' | 'accepted' | 'rejected'>('in_review')
 const reviewOpinions = ref<ReviewOpinionItem[]>([])
@@ -65,9 +63,7 @@ onMounted(async () => {
       date: new Date(submission.updated_at).toLocaleDateString(),
     })
     submissionStatus.value =
-      submission.status === 'accepted'
-        ? t('detail.statusAccepted')
-        : t('detail.statusInReview')
+      submission.status === 'accepted' ? t('detail.statusAccepted') : t('detail.statusInReview')
     submissionStatusCode.value = submission.status
     authorId.value = submission.author_id ?? null
   }
@@ -250,7 +246,9 @@ const closeOpinion = async (id: string) => {
       <div class="border-b border-slate-200 px-6 py-5">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 class="text-2xl font-semibold text-slate-900">{{ submissionTitle || $t('detail.fallbackTitle') }}</h1>
+            <h1 class="text-2xl font-semibold text-slate-900">
+              {{ submissionTitle || $t('detail.fallbackTitle') }}
+            </h1>
             <p class="mt-1 text-sm text-slate-500">{{ submissionMeta }}</p>
           </div>
           <span
@@ -266,10 +264,16 @@ const closeOpinion = async (id: string) => {
         </div>
       </div>
       <div class="flex flex-wrap items-center gap-6 px-6 py-3 text-sm text-slate-500">
-        <router-link class="text-slate-500 hover:text-slate-700" :to="`/submissions/${route.params.id}`">
+        <router-link
+          class="text-slate-500 hover:text-slate-700"
+          :to="`/submissions/${route.params.id}`"
+        >
           {{ $t('detail.tabContent') }}
         </router-link>
-        <router-link class="text-slate-500 hover:text-slate-700" :to="`/submissions/${route.params.id}/comments`">
+        <router-link
+          class="text-slate-500 hover:text-slate-700"
+          :to="`/submissions/${route.params.id}/comments`"
+        >
           {{ $t('detail.tabComments') }}
         </router-link>
         <span class="font-medium text-slate-900">{{ $t('detail.tabReviews') }}</span>
@@ -279,9 +283,13 @@ const closeOpinion = async (id: string) => {
     <p v-if="errorMessage" class="text-sm text-amber-600">{{ errorMessage }}</p>
 
     <div class="rounded-lg border border-slate-200 bg-white">
-      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-6 py-4">
+      <div
+        class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-6 py-4"
+      >
         <div class="flex items-center gap-4 text-sm text-slate-600">
-          <span class="font-medium text-slate-900">{{ $t('review.openCount', { count: reviewOpinions.length }) }}</span>
+          <span class="font-medium text-slate-900">{{
+            $t('review.openCount', { count: reviewOpinions.length })
+          }}</span>
           <span>{{ $t('review.closedCount', { count: 0 }) }}</span>
         </div>
         <div class="flex items-center gap-2">
@@ -347,9 +355,15 @@ const closeOpinion = async (id: string) => {
                   </span>
                   <span
                     class="rounded-full px-2 py-0.5 text-xs"
-                    :class="pr.status === 'closed' ? 'bg-slate-100 text-slate-600' : 'bg-emerald-50 text-emerald-700'"
+                    :class="
+                      pr.status === 'closed'
+                        ? 'bg-slate-100 text-slate-600'
+                        : 'bg-emerald-50 text-emerald-700'
+                    "
                   >
-                    {{ pr.status === 'closed' ? $t('review.statusClosed') : $t('review.statusOpen') }}
+                    {{
+                      pr.status === 'closed' ? $t('review.statusClosed') : $t('review.statusOpen')
+                    }}
                   </span>
                 </div>
                 <div class="mt-1 flex items-center justify-between text-xs text-slate-500">
@@ -362,7 +376,10 @@ const closeOpinion = async (id: string) => {
                     {{ $t('review.close') }}
                   </button>
                 </div>
-                <div v-if="pr.reply" class="mt-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                <div
+                  v-if="pr.reply"
+                  class="mt-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600"
+                >
                   {{ $t('review.replyHistory', { reply: pr.reply }) }}
                 </div>
                 <div v-if="reviewOpinionReplies[pr.id]?.length" class="mt-3 space-y-2">
@@ -372,7 +389,14 @@ const closeOpinion = async (id: string) => {
                     class="rounded-md border border-slate-100 bg-white px-3 py-2 text-xs text-slate-600"
                   >
                     <div class="flex items-center justify-between text-[11px] text-slate-400">
-                      <span>{{ reply.role === 'author' ? $t('review.authorLabel') : $t('review.reviewerLabel') }} {{ reply.author }}</span>
+                      <span
+                        >{{
+                          reply.role === 'author'
+                            ? $t('review.authorLabel')
+                            : $t('review.reviewerLabel')
+                        }}
+                        {{ reply.author }}</span
+                      >
                       <span>{{ reply.time }}</span>
                     </div>
                     <p class="mt-1 text-slate-700">{{ reply.body }}</p>
@@ -400,7 +424,12 @@ const closeOpinion = async (id: string) => {
           </li>
         </template>
       </ul>
-      <p v-if="!isLoading && !reviewOpinions.length" class="px-6 py-6 text-center text-xs text-slate-400">{{ $t('review.empty') }}</p>
+      <p
+        v-if="!isLoading && !reviewOpinions.length"
+        class="px-6 py-6 text-center text-xs text-slate-400"
+      >
+        {{ $t('review.empty') }}
+      </p>
     </div>
   </section>
 </template>

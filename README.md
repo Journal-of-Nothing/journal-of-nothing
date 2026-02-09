@@ -10,22 +10,22 @@
 ## 环境变量
 
 1. 复制环境变量模板：
-	- 参考 .env.example
+   - 参考 .env.example
 2. 填写以下变量：
-	- VITE_SUPABASE_URL
-	- VITE_SUPABASE_ANON_KEY
+   - VITE_SUPABASE_URL
+   - VITE_SUPABASE_ANON_KEY
 
 ## 开发
 
 1. 安装依赖：
-	- bun install
+   - bun install
 2. 启动开发服务器：
-	- bun run dev
+   - bun run dev
 
 ## 最小运行清单
 
 1. 在 Supabase SQL Editor 中依次执行：
-	- supabase/bootstrap.sql
+   - supabase/bootstrap.sql
 2. 确认 PostgREST schema cache 已刷新（若控制台提示可手动刷新）。
 3. 确认 .env 已配置 Supabase URL 与匿名密钥。
 
